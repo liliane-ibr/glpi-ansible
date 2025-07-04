@@ -1,0 +1,6 @@
+glpi_version: "10.0.14"
+glpi_admin_password: "Epsi2022!"
+mariadb_root_password: "Epsi2022!"
+glpi_db_name: "glpidb"
+glpi_db_user: "glpiuser"
+glpi_db_password: "Epsi2022!"

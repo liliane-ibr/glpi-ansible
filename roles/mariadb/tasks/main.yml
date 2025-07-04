@@ -1,0 +1,40 @@
+---
+- name: Installer MariaDB
+  apt:
+    name: mariadb-server
+    state: present
+    update_cache: yes
+
+- name: Démarrer et activer MariaDB
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Définir le mot de passe root via socket unix si non défini
+  mysql_user:
+    name: root
+    host: localhost
+    password: "{{ mariadb_root_password }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    check_implicit_admin: yes
+  register: root_passwd_change
+  changed_when: root_passwd_change is changed
+
+- name: Créer la base de données GLPI
+  mysql_db:
+    name: "{{ glpi_db_name }}"
+    state: present
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
+
+- name: Créer l'utilisateur GLPI avec droits sur la base
+  mysql_user:
+    name: "{{ glpi_db_user }}"
+    password: "{{ glpi_db_password }}"
+    priv: "{{ glpi_db_name }}.*:ALL"
+    host: localhost
+    state: present
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
+

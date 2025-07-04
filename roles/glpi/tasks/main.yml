@@ -1,0 +1,23 @@
+---
+- name: Installer les dépendances pour décompression
+  apt:
+    name: tar
+    state: present
+
+- name: Télécharger GLPI
+  get_url:
+    url: "https://github.com/glpi-project/glpi/releases/download/{{ glpi_version }}/glpi-{{ glpi_version }}.tgz"
+    dest: /tmp/glpi.tgz
+
+- name: Extraire GLPI
+  unarchive:
+    src: /tmp/glpi.tgz
+    dest: /var/www/html/
+    remote_src: yes
+
+- name: Donner les bons droits à GLPI
+  file:
+    path: /var/www/html/glpi
+    owner: www-data
+    group: www-data
+    recurse: yes

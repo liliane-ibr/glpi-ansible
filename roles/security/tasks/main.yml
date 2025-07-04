@@ -1,0 +1,42 @@
+---
+- name: Créer un certificat SSL auto-signé
+  community.crypto.x509_certificate:
+    path: /etc/ssl/certs/glpi-selfsigned.crt
+    privatekey_path: /etc/ssl/private/glpi-selfsigned.key
+    provider: selfsigned
+    state: present
+    attributes:
+      commonName: "localhost"
+    selfsigned_not_after: "+365d"
+    selfsigned_digest: sha256
+
+- name: Configurer le VirtualHost SSL
+  copy:
+    dest: /etc/apache2/sites-available/glpi-ssl.conf
+    content: |
+      <VirtualHost *:443>
+          ServerAdmin admin@example.com
+          DocumentRoot /var/www/html/glpi
+          SSLEngine on
+          SSLCertificateFile /etc/ssl/certs/glpi-selfsigned.crt
+          SSLCertificateKeyFile /etc/ssl/private/glpi-selfsigned.key
+          <Directory /var/www/html/glpi>
+              AllowOverride All
+              Require all granted
+          </Directory>
+      </VirtualHost>
+  notify: Restart Apache
+
+- name: Activer le site SSL
+  command: a2ensite glpi-ssl.conf
+  args:
+    creates: /etc/apache2/sites-enabled/glpi-ssl.conf
+  notify: Restart Apache
+
+- name: Activer le module SSL Apache
+  apache2_module:
+    name: ssl
+    state: present
+  notify: Restart Apache
+
+

@@ -1,0 +1,46 @@
+---
+- name: Installer Apache
+  apt:
+    name: apache2
+    state: present
+    update_cache: yes
+
+- name: Activer mod_rewrite
+  command: a2enmod rewrite
+  notify: Restart Apache
+
+- name: Créer VirtualHost pour GLPI (HTTP)
+  copy:
+    dest: /etc/apache2/sites-available/glpi.conf
+    content: |
+      <VirtualHost *:80>
+          ServerAdmin admin@example.com
+          DocumentRoot /var/www/html/glpi
+          <Directory /var/www/html/glpi>
+              AllowOverride All
+              Require all granted
+          </Directory>
+      </VirtualHost>
+  notify: Restart Apache
+
+- name: Activer le site GLPI
+  command: a2ensite glpi.conf
+  notify: Restart Apache
+
+- name: Désactiver le site par défaut d'Apache
+  command: a2dissite 000-default.conf
+  notify: Restart Apache
+
+- name: Supprimer la page index par défaut d'Apache
+  file:
+    path: /var/www/html/index.html
+    state: absent
+
+- name: Vérifier les sites activés
+  command: ls -l /etc/apache2/sites-enabled/
+  register: sites_enabled
+
+- debug:
+    var: sites_enabled.stdout_lines
+
+

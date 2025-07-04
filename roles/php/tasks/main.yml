@@ -1,0 +1,16 @@
+---
+- name: Installer PHP et ses extensions
+  apt:
+    name:
+      - php
+      - php-mysql
+      - php-curl
+      - php-gd
+      - php-mbstring
+      - php-xml
+      - php-ldap
+      - php-imap
+      - php-apcu
+      - php-zip
+      - libapache2-mod-php
+    state: present

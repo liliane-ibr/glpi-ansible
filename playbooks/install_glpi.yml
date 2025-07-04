@@ -1,0 +1,14 @@
+---
+- name: Installation complète de GLPI
+  hosts: glpi
+  become: yes
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  roles:
+    - apache
+    - php
+    - mariadb
+    - glpi
+

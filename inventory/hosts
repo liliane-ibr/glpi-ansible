@@ -1,0 +1,2 @@
+[glpi]
+localhost ansible_connection=local
