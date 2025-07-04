@@ -1,17 +1,17 @@
-GLPI Ansible
+##GLPI Ansible
 Ce projet permet d’automatiser l’installation de GLPI sur un serveur Debian à l’aide d’Ansible. L’objectif est de fournir un déploiement rapide, fiable et reproductible sans intervention manuelle.
 
-💡 Prérequis
-1️⃣ Installer Ansible sur votre machine de contrôle (Debian Bookworm)
+#💡 Prérequis
+1️⃣ Installer Ansible sur votre machine de contrôle 
 Voici les commandes utilisées pour installer Ansible depuis les backports de Debian Bookworm :
-
-
+```bash
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y software-properties-common
 echo 'deb http://deb.debian.org/debian bookworm-backports main' | sudo tee /etc/apt/sources.list.d/backports.list
 sudo apt update
 sudo apt install -y -t bookworm-backports ansible
 ansible --version
+```
 
 
 3️⃣ Serveur cible
